@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_center"
+            android:layout_width="match_parent"
+            android:icon="@drawable/icon_customer"
+            android:iconTint="@color/colorPrimary"
+            android:title="@string/Center" />
+
+    </group>
+
+    <item android:title="其他">
+        <menu>
+            <item
+                android:id="@+id/nav_setting"
+                android:icon="@drawable/icon_setting"
+                android:iconTint="@color/colorPrimary"
+                android:title="@string/Setting" />
+            <item
+                android:id="@+id/nav_info"
+                android:icon="@drawable/icon_info"
+                android:iconTint="@color/colorPrimary"
+                android:title="@string/About" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/icon_logout"
+                android:iconTint="@color/colorPrimary"
+                android:title="@string/Logout"/>
+            <item
+                android:id="@+id/nav_exit"
+                android:icon="@drawable/icon_exit"
+                android:iconTint="@color/colorPrimary"
+                android:title="@string/Exit"/>
+        </menu>
+
+    </item>
+
+</menu>

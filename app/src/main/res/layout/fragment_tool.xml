@@ -1,0 +1,93 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.lemonxq_laplace.pregnantmonitor.fragment.ToolFragment">
+
+   <VideoView
+       android:id = "@+id/vv_player"
+       android:layout_width = "match_parent"
+       android:layout_height = "200dp"/>
+    <SeekBar
+        android:id="@+id/sb_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/black"
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+    <LinearLayout
+        android:id = "@+id/show_image"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/relativelayout"
+            android:layout_width="150dp"
+            android:layout_height="150dp" >
+
+
+            <ImageView
+                android:id="@+id/iv_head1"
+                android:layout_width="150dp"
+                android:layout_height="150dp"/>
+            <TextView
+                android:id="@+id/myImageViewText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/iv_head1"
+                android:layout_alignTop="@id/iv_head1"
+                android:layout_alignEnd="@id/iv_head1"
+                android:layout_alignBottom="@id/iv_head1"
+                android:layout_margin="1dp"
+                android:gravity="center"
+                android:text="@string/image1_text"
+                android:textColor="#000000" />
+
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/images_blank"
+            android:layout_width="85dp"
+            android:layout_height="150dp" />
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/relativelayout2"
+            android:layout_width="150dp"
+            android:layout_height="150dp" >
+
+
+        <ImageView
+            android:id="@+id/iv_head2"
+            android:layout_width="150dp"
+            android:layout_height="150dp"/>
+        <TextView
+            android:id="@+id/myImageViewText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/iv_head2"
+            android:layout_alignTop="@id/iv_head2"
+            android:layout_alignEnd="@id/iv_head2"
+            android:layout_alignBottom="@id/iv_head2"
+            android:layout_margin="1dp"
+            android:gravity="center"
+            android:text="@string/image1_text2"
+            android:textColor="#000000" />
+    </RelativeLayout>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/black3"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp" />
+    <Button
+        android:id="@+id/get_video_sigh_up"
+        android:layout_width="180dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:text="@string/load_image"/>
+
+</LinearLayout>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <!--标题栏-->
+    <LinearLayout
+        android:id="@+id/layout_titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorPrimary"
+        android:fitsSystemWindows="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:src="@mipmap/arrow_back_white"
+            android:visibility="visible" />
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="@string/Register"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="362dp"
+            android:layout_height="62dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/register_account"
+            android:drawableStart="@android:drawable/ic_menu_myplaces"
+            android:hint="用户名" />
+
+
+        <EditText
+            android:id="@+id/register_account"
+            android:layout_width="362dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="67dp"
+            android:drawableStart="@android:drawable/ic_menu_myplaces"
+            android:hint="@string/AccountHint" />
+
+        <EditText
+            android:id="@+id/studentNumber"
+            android:layout_width="374dp"
+            android:layout_height="66dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="103dp"
+            android:drawableStart="@android:drawable/ic_lock_idle_lock"
+
+            android:hint="学号" />
+
+        <EditText
+            android:id="@+id/register_pwd"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/studentNumber"
+            android:drawableStart="@android:drawable/ic_lock_idle_lock"
+            android:ems="10"
+            android:hint="密码"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/register_pwd_confirm"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/register_pwd"
+            android:layout_centerHorizontal="true"
+            android:drawableStart="@android:drawable/ic_lock_idle_lock"
+            android:ems="10"
+            android:hint="@string/ConfirmPwd"
+            android:inputType="textPassword" />
+
+        <!--注册、取消按钮-->
+        <Button
+            android:id="@+id/register_confirm"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/register_pwd_confirm"
+            android:layout_below="@+id/register_pwd_confirm"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:background="#1896f7"
+            android:text="@string/Register"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/register_cancel"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/register_pwd_confirm"
+            android:layout_below="@+id/register_pwd_confirm"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="30dp"
+            android:background="#0ff8a7"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>
