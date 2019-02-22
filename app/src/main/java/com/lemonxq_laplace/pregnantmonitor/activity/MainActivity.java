@@ -43,6 +43,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.baidu.location.BDLocation;
@@ -65,6 +66,7 @@ import com.lemonxq_laplace.pregnantmonitor.Util.Server;
 import com.lemonxq_laplace.pregnantmonitor.Util.SharedPreferencesUtil;
 import com.lemonxq_laplace.pregnantmonitor.Util.UserManager;
 import com.lemonxq_laplace.pregnantmonitor.Util.Util;
+import com.lemonxq_laplace.pregnantmonitor.activity.student_select_course.Show_class;
 import com.lemonxq_laplace.pregnantmonitor.fragment.DateDialogFragment;
 import com.lemonxq_laplace.pregnantmonitor.fragment.MonitorFragment;
 import com.lemonxq_laplace.pregnantmonitor.fragment.ToolFragment;
@@ -99,6 +101,7 @@ public class MainActivity extends BaseActivity implements DialogInterface.OnDism
     private TextView nickNameText;
     private ToolBar mMToolBar;
     private Toolbar mTitleBar;
+    private String address;
     private TextView longtitude;
     private TextView altitude;
     private MonitorFragment monitorFragment = new MonitorFragment();
@@ -122,10 +125,6 @@ public class MainActivity extends BaseActivity implements DialogInterface.OnDism
                 String strlonti = Double.toString(bdLocation.getLongitude());
                 monitorFragment.longtitude.setText(strlonti);
                 monitorFragment.altitude.setText(strlati);
-                if (bdLocation.getLocType() == BDLocation.TypeGpsLocation)
-                    Toast.makeText(getApplicationContext(), "GPS精确定位", Toast.LENGTH_SHORT).show();
-                if (bdLocation.getLocType() == BDLocation.TypeNetWorkLocation)
-                    Toast.makeText(getApplicationContext(), "网络定位结果", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -220,6 +219,7 @@ public class MainActivity extends BaseActivity implements DialogInterface.OnDism
             actionBar.setDisplayHomeAsUpEnabled(true);// 显示导航按钮
             actionBar.setHomeAsUpIndicator(R.drawable.icon_menu2);// 设置导航按钮图标
         }
+        //monitorFragment.des.setText(address);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,@NonNull int[] grantResults){
@@ -369,6 +369,19 @@ public class MainActivity extends BaseActivity implements DialogInterface.OnDism
                 Toast.makeText(this,"camera permission failed",Toast.LENGTH_LONG).show();
             }
         }
+        if(requestCode==STORAGE_PERMISSIONS_REQUEST_CODE)
+        {
+            if(grantResults[0]==PackageManager.PERMISSION_GRANTED)
+            {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent,STORAGE_PERMISSIONS_REQUEST_CODE);
+
+            }else
+            {
+                Toast.makeText(getApplicationContext(),"please grant the rights",Toast.LENGTH_SHORT).show();
+            }
+        }
     };
 
     private boolean crop(Activity activity, Uri uri) {
@@ -481,7 +494,8 @@ public class MainActivity extends BaseActivity implements DialogInterface.OnDism
                     case R.id.nav_info:// 关于
                         autoStartActivity(AboutActivity.class);
                         break;
-
+                    case R.id.select_course:
+                        autoStartActivity(Show_class.class);
                     case R.id.nav_logout:// 注销
                         SharedPreferencesUtil spu = new SharedPreferencesUtil(MainActivity.this);
                         spu.setParam("isAutoLogin",false);
@@ -744,7 +758,7 @@ public class MainActivity extends BaseActivity implements DialogInterface.OnDism
                         }
                         break;
                     case 1:// 本地相册
-                        photoUtil.selectPicture(MainActivity.this,getApplicationContext());
+                        autoObtainStoragePermission();
                         break;
 
                 }
@@ -752,7 +766,33 @@ public class MainActivity extends BaseActivity implements DialogInterface.OnDism
         });
         builder.show();
     }
+    private static final int STORAGE_PERMISSIONS_REQUEST_CODE = 0x04;
 
+    /**
+     * 动态申请sdcard读写权限
+     */
+    private static final int CODE_GALLERY_REQUEST = 0xa0;
+    private void autoObtainStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSIONS_REQUEST_CODE);
+            } else {
+                //PhotoUtils.openPic(this, CODE_GALLERY_REQUEST);
+                Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent,STORAGE_PERMISSIONS_REQUEST_CODE);
+            }
+        } else {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent,STORAGE_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+
+
+    private File fileCropUri = new File(Environment.getExternalStorageDirectory().getPath() + "/crop_photo.jpg");
+    private Uri cropImageUri;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
@@ -767,10 +807,15 @@ public class MainActivity extends BaseActivity implements DialogInterface.OnDism
             Bitmap image = (Bitmap)extras.get("data");
             avatarImage.setImageBitmap(image);
         }
+        if(requestCode==STORAGE_PERMISSIONS_REQUEST_CODE)
+        {
+            cropImageUri = Uri.fromFile(fileCropUri);
+            Uri new_uri = Uri.parse(PhotoUtil.getPath(getApplicationContext(),intent.getData()));
+            Bitmap bitmap = PhotoUtil.getBitmapFromUri(new_uri,getApplicationContext());
+            avatarImage.setImageBitmap(bitmap);
+        }
 
     }
-
-
 
 
     private void showResponse(final String msg) {

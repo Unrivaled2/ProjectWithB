@@ -1,7 +1,9 @@
 package com.lemonxq_laplace.pregnantmonitor.fragment;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -28,13 +30,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.lemonxq_laplace.pregnantmonitor.Data.User;
 import com.lemonxq_laplace.pregnantmonitor.R;
 import com.lemonxq_laplace.pregnantmonitor.Util.CommonRequest;
 import com.lemonxq_laplace.pregnantmonitor.Util.Consts;
 import com.lemonxq_laplace.pregnantmonitor.Util.HttpUtil;
+import com.lemonxq_laplace.pregnantmonitor.Util.UserManager;
 import com.lemonxq_laplace.pregnantmonitor.Util.Util;
 import com.lemonxq_laplace.pregnantmonitor.activity.AnalyzeActivity;
+import com.lemonxq_laplace.pregnantmonitor.activity.CenterActivity;
 import com.lemonxq_laplace.pregnantmonitor.activity.FStepActivity;
+import com.lemonxq_laplace.pregnantmonitor.activity.getFrame.GetFrame;
+import com.lemonxq_laplace.pregnantmonitor.view.WheelView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -50,6 +57,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -68,267 +76,129 @@ import okhttp3.Response;
  */
 public class ToolFragment extends Fragment {
 
-    private View view;
-    private VideoView videoview;
-    private SeekBar seekBar;
-    private TextView black1;
-    private LinearLayout linearLayout;
-    private ImageView imageView1;
-    private RelativeLayout relativeLayout1;
-    private RelativeLayout relativeLayout2;
-    private TextView black2;
-    private ImageView imageview2;
-    private TextView black3;
-    private Button up_load;
-    private Uri videouri;
-    private File mediaFile;
-    private TextView image1_text;
-    private TextView image2_text;
-    private Handler mhandler;
-    private static final int VIDEO_CAPTURE = 101;
-    public HttpUtil util;
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private static OkHttpClient client = new OkHttpClient();
+    View view;
+    private TextView username;
+    private TextView Place;
+    private  TextView Classroom;
+    private Button place;
+    private Button class_room;
+    private Button begin_signup;
+    private Button sign_up;
+    private ArrayList<String> class_room_list= new ArrayList<String>();
+    private ArrayList<String> place_list = new ArrayList<String>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_tool, container, false);
         InitComponent();
-        up_load.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                take_video();
-                //playVideo();
-            }
-        });
+        initData();
+        setListeners();
 
         return view;
 
     }
 
-    private void InitComponent() {
-        videoview = view.findViewById(R.id.vv_player);
-        seekBar = view.findViewById(R.id.sb_select);
-        mhandler = new Handler();
-        black1 = view.findViewById(R.id.black);
-        linearLayout = view.findViewById(R.id.show_image);
-        imageView1 = view.findViewById(R.id.iv_head1);
-        black2 = view.findViewById(R.id.images_blank);
-        imageview2 = view.findViewById(R.id.iv_head2);
-        black3 = view.findViewById(R.id.black3);
-        up_load = view.findViewById(R.id.get_video_sigh_up);
-        relativeLayout1 = view.findViewById(R.id.relativelayout);
-        relativeLayout2 = view.findViewById(R.id.relativelayout2);
-        image1_text = view.findViewById(R.id.myImageViewText);
-        image2_text = view.findViewById(R.id.myImageViewText2);
-        util = new HttpUtil();
-
+    private  void initData()
+    {
+        class_room_list.add("100");
+        class_room_list.add("101");
+        class_room_list.add("102");
+        class_room_list.add("103");
+        class_room_list.add("104");
+        class_room_list.add("106");
+        class_room_list.add("107");
+        class_room_list.add("108");
+        place_list.add("北综");
+        place_list.add("教三");
+        place_list.add("东教A");
+        place_list.add("东教B");
+        place_list.add("教二");
     }
 
-    private void take_video(){
-        /*Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        mediaFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/myvideo.mp4");
-        if(mediaFile.exists()){
-            mediaFile.delete();
-        }
-        videouri = Uri.fromFile(mediaFile);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT,videouri);
-        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-        //getActivity().startActivityForResult(intent,VIDEO_CAPTURE);
-        //getActivity().startActivity(intent);
-        Context context = getActivity();
-        if(intent.resolveActivity(context.getPackageManager())!= null){
-            startActivityForResult(intent,VIDEO_CAPTURE);
-        }*/
-        Resources res = getResources();
-        Bitmap bitmap = BitmapFactory.decodeResource(res,R.mipmap.ic_launcher);
-        final File file = change_to_file(bitmap);
-        new Thread(new Runnable() {
+    private void setListeners()
+    {
+        place.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                uploadFileAndString(Consts.URL_UPLOAD_IMAGE,file.getName(),file);
+            public void onClick(View view) {
+                View heightView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_wheelview, null);
+                final WheelView wv = heightView.findViewById(R.id.wheel_view);
+                wv.setItems(place_list);
+                wv.setSeletion(3);
+
+                // 弹身高修改框
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setView(heightView);
+                builder.setTitle("上课地点");
+                builder.setNegativeButton(getResources().getString(R.string.cancel),null);
+                builder.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // 保存身高
+                        String heightStr = wv.getSeletedItem();
+                        float height = Float.parseFloat(heightStr)/100.0f;
+                        User user = UserManager.getCurrentUser();
+                        user.setHeight(height);
+                        user.save();
+                        // 更改显示
+                        Place.setText(heightStr);
+                    }
+                });
+                builder.show();
             }
-        }).start();
-    };
+        });
 
-
-    private void uploadFileAndString(String actionUrl, String newName, File uploadFile) {
-        String end = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
-        try {
-            URL url = new URL(actionUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            /* 允许Input、Output，不使用Cache */
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            /* 设置传送的method=POST */
-            con.setRequestMethod("POST");
-            /* setRequestProperty */
-            con.setRequestProperty("Connection", "Keep-Alive");
-            con.setRequestProperty("Charset", "UTF-8");
-            con.setRequestProperty("Content-Type",
-                    "multipart/form-data;boundary=" + boundary);
-            con.connect();
-            /* 设置DataOutputStream */
-            DataOutputStream ds = new DataOutputStream(con.getOutputStream());
-            ds.writeBytes(twoHyphens + boundary + end);
-            ds.writeBytes("Content-Disposition: form-data; "
-                    + "name=\"image01\";filename=\"" + newName + "\"" + end);
-            ds.writeBytes(end);
-            /* 取得文件的FileInputStream */
-            FileInputStream fStream = new FileInputStream(uploadFile);
-            /* 设置每次写入1024bytes */
-            int bufferSize = 1024;
-            byte[] buffer = new byte[bufferSize];
-
-            int length = -1;
-            /* 从文件读取数据至缓冲区 */
-            while ((length = fStream.read(buffer)) != -1) {
-                /* 将资料写入DataOutputStream中 */
-                ds.write(buffer, 0, length);
+        class_room.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View heightView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_wheelview, null);
+                final WheelView wv = heightView.findViewById(R.id.wheel_view);
+                wv.setItems(class_room_list);
+                wv.setSeletion(3);
+                // 弹身高修改框
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setView(heightView);
+                builder.setTitle("教室选择");
+                builder.setNegativeButton(getResources().getString(R.string.cancel),null);
+                builder.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // 保存身高
+                        String heightStr = wv.getSeletedItem();
+                        float height = Float.parseFloat(heightStr)/100.0f;
+                        User user = UserManager.getCurrentUser();
+                        user.setHeight(height);
+                        user.save();
+                        // 更改显示
+                        Classroom.setText(heightStr);
+                    }
+                });
+                builder.show();
             }
-            ds.writeBytes(end);
+        });
+        begin_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-            // -----
-            ds.writeBytes(twoHyphens + boundary + end);
-            ds.writeBytes("Content-Disposition: form-data;name=\"name\"" + end);
-            ds.writeBytes(end + URLEncoder.encode("xiexiezhichi", "UTF-8")
-                    + end);
-            // -----
-
-            ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
-            fStream.close();
-            ds.flush();
-
-            /* 取得Response内容 */
-            InputStream is = con.getInputStream();
-            int ch;
-            StringBuffer b = new StringBuffer();
-            while ((ch = is.read()) != -1) {
-                b.append((char) ch);
             }
-            String result = b.toString();
-            Toast.makeText(getContext(),result,Toast.LENGTH_SHORT);
-            con.disconnect();
+        });
 
-            /* 关闭DataOutputStream */
-            ds.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public File change_to_file(Bitmap bitmap){
-        if (Environment.getExternalStorageState().equals( Environment.MEDIA_MOUNTED)) {
-            String sdCardDir = Environment.getExternalStorageDirectory() + "/BLImage/";
-            File dirfile = new File(sdCardDir);
-            if (!dirfile.exists()) {
-                dirfile.mkdirs();
+        sign_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),GetFrame.class);
+                startActivity(intent);
             }
-            File file = new File(sdCardDir, "face.jpg");
-            FileOutputStream out;
-            try {
-                out = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                out.flush();
-                out.close();
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            Toast.makeText(getContext(), "store success", Toast.LENGTH_SHORT);
-            return file;
-        }
-        return null;
-    };
-
-    public static void uploadImage(String address, Bitmap bitmap, okhttp3.Callback callback){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();//将Bitmap转成Byte[]
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);//压缩
-        //String imgStr = Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);//加密转换成String
-
-        CommonRequest commonrequest = new CommonRequest();
-        //commonrequest.addRequestParam("name","20171002196");
-        //commonrequest.addRequestParam("class_name","117171");
-        commonrequest.addRequestParam("image01",baos.toByteArray().toString());
-        RequestBody requestBody = RequestBody.create(JSON,commonrequest.getJsonStr());
-        Request request = new Request.Builder()
-                .url(address)
-                .post(requestBody)
-                .build();
-        client.newCall(request).enqueue(callback);
-    }
-    public static File saveBitmapFile(Bitmap bitmap, String filepath){
-        File file=new File(filepath);//将要保存图片的路径
-        try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VIDEO_CAPTURE) {
-            if (resultCode == -1) {
-               Toast.makeText(getContext(),"video record successfully",Toast.LENGTH_SHORT).show();
-                MediaMetadataRetriever media = new MediaMetadataRetriever();
-                media.setDataSource(mediaFile.getPath());
-                Bitmap image1 = media.getFrameAtTime(1);
-                Bitmap image2 = media.getFrameAtTime(1,MediaMetadataRetriever.OPTION_CLOSEST);
-                imageView1.setImageBitmap(image1);
-                image1_text.setText("");
-                image2_text.setText("");
-                imageview2.setImageBitmap(image2);
-            } else if (resultCode == 0) {
-                Toast.makeText(getContext(),"video record canceled",Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(),"video capture failed",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void playVideo() {
-
-        videoview.setVideoURI(videouri);
-        videoview.start();
-        // Updating progress bar
-        updateProgressBar();
-    }
-
-    private void updateProgressBar() {
-        mhandler.postDelayed(updateTimeTask, 100);
-    }
-
-    private Runnable updateTimeTask = new Runnable() {
-        public void run() {
-            seekBar.setProgress(videoview.getCurrentPosition());
-            seekBar.setMax(videoview.getDuration());
-            mhandler.postDelayed(this, 100);
-        }
-    };
-
-    public void onProgressChanged(SeekBar seekbar, int progress,boolean fromTouch) {
+        });
 
     }
-    public void onStartTrackingTouch(SeekBar seekbar) {
-        mhandler.removeCallbacks(updateTimeTask);
+
+    private void InitComponent() {
+        username = view.findViewById(R.id.center_account_t);
+        class_room = view.findViewById(R.id.center_height_btn_t);
+        place = view.findViewById(R.id.place_choose);
+        begin_signup = view.findViewById(R.id.center_exit_btn_t);
+        sign_up = view.findViewById(R.id.center_exit_btn_s);
+        Place = view.findViewById(R.id.Place);
+        Classroom = view.findViewById(R.id.classroom);
     }
-    public void onStopTrackingTouch(SeekBar seekbar) {
-        mhandler.removeCallbacks(updateTimeTask);
-        videoview.seekTo(seekbar.getProgress());
-        updateProgressBar();
-    }
-
-
-
 }
-

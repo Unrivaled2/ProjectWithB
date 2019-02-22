@@ -1,5 +1,6 @@
 package com.lemonxq_laplace.pregnantmonitor.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,6 +39,7 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 
 import java.util.ArrayList;
 import com.lemonxq_laplace.pregnantmonitor.R;
+import com.lemonxq_laplace.pregnantmonitor.fragment.MonitorFragment;
 import com.lemonxq_laplace.pregnantmonitor.nearby_location.App;
 import com.lemonxq_laplace.pregnantmonitor.nearby_location.LocationService;
 import com.lemonxq_laplace.pregnantmonitor.nearby_location.PermissionActivity;
@@ -54,9 +56,10 @@ public class Show_location extends PermissionActivity implements AdapterView.OnI
     private BaiduMap mBaiduMap;
     private GeoCoder mGeoCoder;
     private PoiSearch mPoiSearch;
-
+    private MonitorFragment monitorFragment = new MonitorFragment();
     private LocationService locationService;
     private final int LOCATION_REQUEST_CODE = 1001;
+    private final int SPEECH_REQUEST_CODE = 1002;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +77,7 @@ public class Show_location extends PermissionActivity implements AdapterView.OnI
         });
         initView();
         initListener();
-        requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE}, LOCATION_REQUEST_CODE);
+        requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO}, LOCATION_REQUEST_CODE);
     }
     @Override
     protected void onStart() {
@@ -179,7 +182,13 @@ public class Show_location extends PermissionActivity implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
+        /*
+        PoiInfo poi = (PoiInfo)mPlaceAdapter.getItem(position);
+        String address = poi.address;
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        intent.putExtra("place",address);
+        startActivity(intent);
+        */
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import com.lemonxq_laplace.pregnantmonitor.Util.Util;
 import com.lemonxq_laplace.pregnantmonitor.activity.MainActivity;
 import com.lemonxq_laplace.pregnantmonitor.activity.MonitorHistoryActivity;
 import com.lemonxq_laplace.pregnantmonitor.activity.Show_location;
+import com.lemonxq_laplace.pregnantmonitor.activity.Show_speech;
 
 import java.util.Date;
 import java.util.List;
@@ -50,6 +53,8 @@ public class MonitorFragment extends Fragment {
     private LocationManager locationManager;
     private String locationProvider;
     private Button monitor_button;
+    private RadioGroup radioGroup;
+    public EditText des;
     private Handler handler = new Handler();
     private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
 
@@ -57,6 +62,7 @@ public class MonitorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_monitor, null);
+       // requestPermission();
         initView();
         getLocation(this.getActivity());
         return mView;
@@ -69,11 +75,26 @@ public class MonitorFragment extends Fragment {
         input = mView.findViewById(R.id.input);
         start_edit = mView.findViewById(R.id.start_place);
         monitor_button = mView.findViewById(R.id.start_monitor);
+        radioGroup = mView.findViewById(R.id.radioBtn);
+        des = mView.findViewById(R.id.end_place);
         monitor_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Show_location.class);
-                startActivity(intent);
+
+            }
+        });
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i)
+                {
+                    case R.id.radio1:
+                        Intent intent = new Intent(getActivity(),Show_speech.class);
+                        startActivity(intent);
+                    case R.id.radio2:
+                        Intent intent1 = new Intent(getActivity(),Show_location.class);
+                        startActivity(intent1);
+                }
             }
         });
     }

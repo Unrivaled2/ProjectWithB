@@ -96,5 +96,10 @@
     <string name="version">当前版本 1.0</string>
     <string name="update">检查更新</string>
     <string name="title_activity_show_location">Show_location</string>
+    <string name="title_activity_show_speech">Show_speech</string>
+    <string name="title_activity_get_frame">getFrame</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

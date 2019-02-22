@@ -2,7 +2,11 @@ package com.lemonxq_laplace.pregnantmonitor.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,7 +57,7 @@ public class LogInActivity extends BaseActivity {
 
         initComponents();
         setListeners();
-
+        requestPermission();
         // 自动填充
         SharedPreferencesUtil spu = new SharedPreferencesUtil(this);
         Boolean isRemember = (Boolean) spu.getParam("isRememberPwd",false);
@@ -69,6 +73,33 @@ public class LogInActivity extends BaseActivity {
             }
             if(isAutoLogin)
                 Login();
+        }
+
+    }
+
+    final int CAMERA_OK=203;
+
+    private void requestPermission()
+    {
+        if (Build.VERSION.SDK_INT>22){
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(LogInActivity.this, new String[]{android.Manifest.permission.CAMERA},CAMERA_OK);
+
+            }
+        }
+
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_OK:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //这里已经获取到了摄像头的权限，想干嘛干嘛了可以 }else { //这里是拒绝给APP摄像头权限，给个提示什么的说明一下都可以。
+                    // Toast.makeText(MainActivity.this,"请手动打开相机权限",Toast.LENGTH_SHORT).show(); }
+                    // break; default: break;
+                } else {
+                    Toast.makeText(getApplicationContext(), "签到功能无法使用", Toast.LENGTH_SHORT).show();
+                }
         }
     }
 
